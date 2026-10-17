@@ -30,6 +30,43 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router, isPrintPage, isLoginPage, isStudentPortal]);
 
+  // Logika Auto-Logout Berdasarkan Inaktivitas (Idle Timer)
+  useEffect(() => {
+    if (isPrintPage || isLoginPage || isStudentPortal) return;
+
+    let inactivityTimer: NodeJS.Timeout;
+
+    const logoutUser = () => {
+      localStorage.removeItem('sagara_user');
+      alert('Sesi Anda telah berakhir karena tidak ada aktivitas selama 30 menit. Silakan masuk kembali.');
+      window.location.href = '/login';
+    };
+
+    const resetTimer = () => {
+      clearTimeout(inactivityTimer);
+      // Atur durasi inaktivitas: 30 menit (30 * 60 * 1000 ms)
+      // Anda bisa ubah misal jadi (5 * 60 * 1000) untuk uji coba 5 menit
+      inactivityTimer = setTimeout(logoutUser, 30 * 60 * 1000);
+    };
+
+    // Daftar aktivitas mouse/keyboard yang mendeteksi keaktifan pengguna
+    const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
+    
+    events.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    // Inisialisasi timer pertama kali
+    resetTimer();
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [isPrintPage, isLoginPage, isStudentPortal]);
+
   // Render halaman login, cetak, atau portal siswa secara mandiri tanpa Sidebar admin
   if (isPrintPage || isLoginPage || isStudentPortal) {
     return <main className="w-full bg-slate-900 min-h-screen">{children}</main>;
