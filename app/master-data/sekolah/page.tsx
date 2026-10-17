@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Save, Building2, UserCheck, MapPin, School } from 'lucide-react';
+import { Save, Building2, UserCheck, MapPin, School, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import Modal from '@/components/Modal';
 
 export default function SettingsPage() {
@@ -109,7 +110,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-12">
+    <div className="w-full space-y-4 text-xs pb-12">
       <Modal
         isOpen={modalConfig.isOpen}
         onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
@@ -129,16 +130,25 @@ export default function SettingsPage() {
         </div>
       </Modal>
 
-      {/* Header Halaman */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">Pengaturan Profil Sekolah & Pejabat</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Kelola informasi instansi dan Kepala Sekolah yang tercantum pada tanda tangan Rapor PDF</p>
+      {/* Header Halaman dengan Tombol Back (Konsisten seperti Program Keahlian) */}
+      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/master-data"
+            className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl border border-gray-200 transition-colors"
+            title="Kembali ke Master Data"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div>
+            <h2 className="text-base font-bold text-gray-900">Pengaturan Profil Sekolah & Pejabat</h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">Kelola informasi instansi dan Kepala Sekolah yang tercantum pada tanda tangan Rapor PDF</p>
+          </div>
         </div>
       </div>
 
-      {/* Form Pengaturan */}
-      <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
+      {/* Form Pengaturan Full Width */}
+      <form onSubmit={handleSaveSettings} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6">
         <div className="space-y-4">
           <h3 className="text-xs font-bold uppercase tracking-wider text-sky-800 border-b border-gray-100 pb-2 flex items-center gap-2">
             <Building2 className="w-4 h-4 text-sky-600" /> Informasi Instansi
@@ -175,7 +185,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="space-y-4 pt-4">
+        <div className="space-y-4 pt-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-sky-800 border-b border-gray-100 pb-2 flex items-center gap-2">
             <UserCheck className="w-4 h-4 text-sky-600" /> Pejabat Kepala Sekolah (Penandatangan Rapor)
           </h3>

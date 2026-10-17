@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Plus, Trash2, Edit3, X, UserPlus } from 'lucide-react';
+import { Plus, Trash2, Edit3, X, UserPlus, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import Modal from '@/components/Modal';
 
 type Profile = {
@@ -488,11 +489,20 @@ export default function ProfilesManagementPage() {
         </div>
       )}
 
-      {/* Header */}
+      {/* Header dengan Tombol Kembali (Konsisten) */}
       <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div>
-          <h2 className="text-base font-bold text-slate-900">Manajemen Hak Akses & Penugasan Kelas Guru</h2>
-          <p className="text-[11px] text-slate-500">Kelola role akun (Admin / Pelatih) dan pemetaan kelas binaan pelatih</p>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/master-data"
+            className="p-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-xl border border-gray-200 transition-colors"
+            title="Kembali ke Master Data"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
+          <div>
+            <h2 className="text-base font-bold text-slate-900">Manajemen Hak Akses & Penugasan Kelas Guru</h2>
+            <p className="text-[11px] text-slate-500">Kelola role akun (Admin / Pelatih) dan pemetaan kelas binaan pelatih</p>
+          </div>
         </div>
         <div className="flex gap-2 bg-slate-100 p-1 rounded-xl">
           <button
