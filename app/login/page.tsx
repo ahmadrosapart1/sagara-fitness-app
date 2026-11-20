@@ -53,8 +53,8 @@ export default function LoginPage() {
             <div className="inline-flex p-3 bg-sky-50 text-sky-600 rounded-2xl mb-1 shadow-sm">
               <Shield className="w-8 h-8" />
             </div>
-            <h1 className="text-xl font-bold text-slate-900">Sagara - SMK Negeri 1 Karawang</h1>
-            <p className="text-xs text-slate-500">Sistem Pelacakan Pertumbuhan Atletik & Kebugaran Siswa</p>
+            <h1 className="text-xl font-bold text-slate-900">SAGARA-PRO</h1>
+            <p className="text-xs text-slate-500">Student Ability & Growth Analytics for Readiness Application – Physical Record Optimization</p>
           </div>
 
           {errorMessage && (
