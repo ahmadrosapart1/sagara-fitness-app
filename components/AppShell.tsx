@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from './Sidebar';
-import { Clock, ShieldAlert } from 'lucide-react';
+import { ShieldAlert, Menu, X } from 'lucide-react';
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isIdleModalOpen, setIsIdleModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isPrintPage = pathname?.includes('/print');
   const isLoginPage = pathname === '/login';
@@ -32,6 +33,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [pathname, router, isPrintPage, isLoginPage, isStudentPortal]);
 
+  // Tutup drawer mobile otomatis saat berpindah halaman
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [pathname]);
+
   // Logika Auto-Logout Berdasarkan Inaktivitas (Idle Timer) dengan Modal Modern
   useEffect(() => {
     if (isPrintPage || isLoginPage || isStudentPortal) return;
@@ -51,7 +57,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
     // Daftar aktivitas mouse/keyboard yang mendeteksi keaktifan pengguna
     const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
-    
+
     events.forEach((event) => {
       window.addEventListener(event, resetTimer);
     });
@@ -87,7 +93,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden relative">
+    <div className="flex min-h-screen md:h-screen bg-gray-50 md:overflow-hidden relative">
       {/* Modal Modern Inaktivitas */}
       {isIdleModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
@@ -111,9 +117,40 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+      {/* Backdrop Gelap saat Sidebar Mobile Terbuka */}
+      {isMobileMenuOpen && (
+        <div
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="fixed inset-0 z-30 bg-slate-950/60 backdrop-blur-xs md:hidden"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar Responsif (Drawer di Mobile, Statis di Desktop) */}
+      <Sidebar
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Area Konten Utama */}
+      <div className="flex-1 min-w-0 flex flex-col md:overflow-hidden">
+        {/* Header Bar Khusus Mobile / Tablet Kecil */}
+        <header className="md:hidden sticky top-0 z-20 flex items-center justify-between bg-slate-900 text-white px-4 py-3 border-b border-slate-800 shadow-sm">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-500 shrink-0"></span>
+            <span className="font-bold text-sm tracking-wider truncate">SAGARA</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors cursor-pointer"
+            aria-label={isMobileMenuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'}
+          >
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </header>
+
+        <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto bg-gray-50 p-4 sm:p-5 md:p-6">
           {children}
         </main>
       </div>
