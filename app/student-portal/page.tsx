@@ -338,7 +338,7 @@ export default function StudentPortalPage() {
                 <Search className="absolute left-4 top-3.5 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Masukkan Nomor NIS Anda (contoh: 24251144)..."
+                  placeholder="Masukkan Nomor NIS Anda (contoh: 21221001)..."
                   value={nisInput}
                   onChange={(e) => setNisInput(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors font-medium"
