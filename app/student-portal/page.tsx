@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Search, User, Award, TrendingUp, Activity, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { Search, User, Award, TrendingUp, ArrowLeft, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 
 type TestPeriodRecord = {
@@ -293,35 +293,44 @@ export default function StudentPortalPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
       {/* Top Navbar */}
-      <header className="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center font-black text-white shadow-lg shadow-sky-500/30">
+      <header className="bg-slate-800/80 backdrop-blur-md border-b border-slate-700 px-4 sm:px-6 py-3.5 sm:py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sticky top-0 z-30">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="w-10 h-10 rounded-xl bg-sky-600 flex items-center justify-center font-black text-white shadow-lg shadow-sky-500/30 shrink-0">
             SG
           </div>
-          <div>
-            <h1 className="font-extrabold text-sm tracking-wide text-white">PORTAL MANDIRI SISWA — SAGARA</h1>
-            <p className="text-[10px] text-slate-400">SMK Negeri 1 Karawang • Cek Profil Kebugaran & Analisis Gap</p>
+          <div className="min-w-0">
+            <h1 className="font-extrabold text-sm tracking-wide text-white truncate">
+              PORTAL MANDIRI SISWA — SAGARA
+            </h1>
+            <p className="text-[10px] text-slate-400 leading-snug">
+              SMK Negeri 1 Karawang • Cek Profil Kebugaran & Analisis Gap
+            </p>
           </div>
         </div>
-        <Link 
-          href="/" 
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-semibold transition-colors border border-slate-600"
+        <Link
+          href="/"
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-xl text-xs font-semibold transition-colors border border-slate-600 shrink-0 whitespace-nowrap"
         >
-          <ArrowLeft className="w-4 h-4" /> Kembali ke Login Utama
+          <ArrowLeft className="w-4 h-4 shrink-0" />
+          <span>Kembali ke Login Utama</span>
         </Link>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-5xl w-full mx-auto p-6 space-y-6">
+      <main className="flex-1 max-w-5xl w-full mx-auto p-4 sm:p-6 space-y-5 sm:space-y-6 min-w-0">
         {/* Form Pencarian NIS */}
         {!studentData && (
-          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 shadow-xl text-center max-w-xl mx-auto my-12 space-y-6">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-xl text-center max-w-xl mx-auto my-6 sm:my-12 space-y-6">
             <div className="w-16 h-16 bg-sky-500/10 text-sky-400 rounded-2xl border border-sky-500/20 flex items-center justify-center mx-auto">
               <ShieldCheck className="w-8 h-8" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-xl font-bold text-white">Cek Rekam Jejak Kebugaran & Latihan</h2>
-              <p className="text-xs text-slate-400">Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat grafik progres latihan, analisis gap, dan rekomendasi FITT secara mandiri.</p>
+              <h2 className="text-lg sm:text-xl font-bold text-white leading-snug">
+                Cek Rekam Jejak Kebugaran & Latihan
+              </h2>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Masukkan Nomor Induk Siswa (NIS) Anda untuk melihat grafik progres latihan, analisis gap, dan rekomendasi FITT secara mandiri.
+              </p>
             </div>
 
             <form onSubmit={handleSearchStudent} className="space-y-4">
@@ -355,82 +364,120 @@ export default function StudentPortalPage() {
 
         {/* Hasil Analisis Siswa */}
         {studentData && (
-          <div className="space-y-6 animate-fadeIn">
-            <div className="flex items-center justify-between bg-slate-800 border border-slate-700 p-4 rounded-xl">
-              <div className="flex items-center gap-2 text-xs text-slate-300">
-                <span>Menampilkan Data atas NIS: <strong className="text-white">{studentData.nis}</strong></span>
+          <div className="space-y-5 sm:space-y-6 animate-fadeIn min-w-0">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-800 border border-slate-700 p-4 rounded-xl">
+              <div className="text-xs text-slate-300">
+                Menampilkan Data atas NIS: <strong className="text-white">{studentData.nis}</strong>
               </div>
               <button
+                type="button"
                 onClick={() => setStudentData(null)}
-                className="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs font-semibold transition-colors"
+                className="w-full sm:w-auto px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-xs font-semibold transition-colors shrink-0 whitespace-nowrap cursor-pointer"
               >
                 Cek NIS Lain
               </button>
             </div>
 
             {/* Profil Ringkas */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row gap-5 items-center justify-between">
-              <div className="flex gap-4 items-center">
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col lg:flex-row gap-5 lg:items-center lg:justify-between min-w-0">
+              <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start text-center sm:text-left min-w-0">
                 <div className="w-16 h-20 bg-slate-700 rounded-xl overflow-hidden border border-slate-600 flex items-center justify-center shrink-0">
                   {studentData.photo_url ? (
-                    <img src={studentData.photo_url} alt={studentData.full_name} className="w-full h-full object-cover" />
+                    <img
+                      src={studentData.photo_url}
+                      alt={studentData.full_name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <User className="w-8 h-8 text-slate-400" />
                   )}
                 </div>
-                <div className="space-y-1">
-                  <h3 className="font-extrabold text-base text-white">{studentData.full_name}</h3>
-                  <p className="text-xs text-slate-400">NIS: <span className="font-semibold text-slate-200">{studentData.nis}</span> | Kelas: <span className="font-bold text-sky-400">{studentData.className}</span></p>
-                  <p className="text-xs text-slate-400">Status DUDI: <span className="font-bold text-emerald-400">{studentData.dudiStatus}</span></p>
+                <div className="space-y-1 min-w-0">
+                  <h3 className="font-extrabold text-base text-white break-words">
+                    {studentData.full_name}
+                  </h3>
+                  <p className="text-xs text-slate-400 break-words">
+                    NIS: <span className="font-semibold text-slate-200">{studentData.nis}</span> | Kelas:{' '}
+                    <span className="font-bold text-sky-400">{studentData.className}</span>
+                  </p>
+                  <p className="text-xs text-slate-400 break-words">
+                    Status DUDI: <span className="font-bold text-emerald-400">{studentData.dudiStatus}</span>
+                  </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-3 w-full md:w-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto shrink-0">
                 <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl text-center">
-                  <span className="block text-[10px] text-sky-400 font-semibold uppercase">Baseline (Tes 1)</span>
+                  <span className="block text-[10px] text-sky-400 font-semibold uppercase mb-0.5">
+                    Baseline (Tes 1)
+                  </span>
                   <span className="text-xs font-bold text-white">{studentData.baselineLabel}</span>
                 </div>
                 <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl text-center">
-                  <span className="block text-[10px] text-emerald-400 font-semibold uppercase">Tes Terakhir</span>
+                  <span className="block text-[10px] text-emerald-400 font-semibold uppercase mb-0.5">
+                    Tes Terakhir
+                  </span>
                   <span className="text-xs font-bold text-white">{studentData.latestTkjiLabel}</span>
                 </div>
-                <div className={`border p-3 rounded-xl text-center ${studentData.gapVsBenchmark >= 0 ? 'bg-indigo-950/40 border-indigo-800/50 text-indigo-200' : 'bg-amber-950/40 border-amber-800/50 text-amber-200'}`}>
-                  <span className="block text-[10px] font-semibold uppercase opacity-80">Gap vs Benchmark</span>
-                  <span className="text-xs font-bold">{studentData.gapVsBenchmark >= 0 ? `+${studentData.gapVsBenchmark} Pt (Above Target)` : `${studentData.gapVsBenchmark} Pt`}</span>
+                <div
+                  className={`border p-3 rounded-xl text-center ${
+                    studentData.gapVsBenchmark >= 0
+                      ? 'bg-indigo-950/40 border-indigo-800/50 text-indigo-200'
+                      : 'bg-amber-950/40 border-amber-800/50 text-amber-200'
+                  }`}
+                >
+                  <span className="block text-[10px] font-semibold uppercase opacity-80 mb-0.5">
+                    Gap vs Benchmark
+                  </span>
+                  <span className="text-xs font-bold">
+                    {studentData.gapVsBenchmark >= 0
+                      ? `+${studentData.gapVsBenchmark} Pt (Above Target)`
+                      : `${studentData.gapVsBenchmark} Pt`}
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Matriks Evaluasi Gap per Butir Tes */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-3">
-              <h4 className="font-bold text-sky-400 text-xs flex items-center gap-2 uppercase tracking-wide">
-                <Award className="w-4 h-4 text-sky-400" /> Matriks Evaluasi Gap per Butir Tes (Tes Awal vs Tes Terakhir)
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 min-w-0">
+              <h4 className="font-bold text-sky-400 text-xs flex items-center gap-2 uppercase tracking-wide leading-snug">
+                <Award className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Matriks Evaluasi Gap per Butir Tes (Tes Awal vs Tes Terakhir)</span>
               </h4>
               <div className="overflow-x-auto border border-slate-700 rounded-xl">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-xs min-w-[680px]">
                   <thead className="bg-slate-900 text-slate-300">
                     <tr>
-                      <th className="p-3">Butir Tes Physical</th>
-                      <th className="p-3 text-center">Tes 1 (Baseline)</th>
-                      <th className="p-3 text-center">Tes Terakhir</th>
-                      <th className="p-3 text-center">Gap Delta</th>
-                      <th className="p-3">Status Evaluasi & Progres</th>
+                      <th className="p-3 whitespace-nowrap">Butir Tes Physical</th>
+                      <th className="p-3 text-center whitespace-nowrap">Tes 1 (Baseline)</th>
+                      <th className="p-3 text-center whitespace-nowrap">Tes Terakhir</th>
+                      <th className="p-3 text-center whitespace-nowrap">Gap Delta</th>
+                      <th className="p-3 whitespace-nowrap">Status Evaluasi & Progres</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-700 text-slate-200">
                     {studentData.itemDeltas.map((item, idx) => (
-                      <tr key={idx} className="hover:bg-slate-750">
-                        <td className="p-3 font-semibold text-white">{item.itemName}</td>
-                        <td className="p-3 text-center text-slate-400">{item.test1Val} ({item.test1Pt} Pt)</td>
-                        <td className="p-3 text-center font-bold text-sky-400">{item.latestVal} ({item.latestPt} Pt)</td>
-                        <td className="p-3 text-center font-bold text-emerald-400">
+                      <tr key={idx} className="hover:bg-slate-700/30">
+                        <td className="p-3 font-semibold text-white whitespace-nowrap">{item.itemName}</td>
+                        <td className="p-3 text-center text-slate-400 whitespace-nowrap">
+                          {item.test1Val} ({item.test1Pt} Pt)
+                        </td>
+                        <td className="p-3 text-center font-bold text-sky-400 whitespace-nowrap">
+                          {item.latestVal} ({item.latestPt} Pt)
+                        </td>
+                        <td className="p-3 text-center font-bold text-emerald-400 whitespace-nowrap">
                           {item.deltaPt > 0 ? `+${item.deltaPt} Pt` : `${item.deltaPt} Pt`}
                         </td>
-                        <td className="p-3 font-medium">
-                          <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold ${
-                            item.deltaPt >= 2 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                            item.deltaPt === 1 ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                          }`}>
+                        <td className="p-3 font-medium whitespace-nowrap">
+                          <span
+                            className={`inline-block px-2.5 py-1 rounded-lg text-[10px] font-bold ${
+                              item.deltaPt >= 2
+                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                : item.deltaPt === 1
+                                ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
+                                : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                            }`}
+                          >
                             {item.status}
                           </span>
                         </td>
@@ -442,69 +489,86 @@ export default function StudentPortalPage() {
             </div>
 
             {/* Preskripsi Latihan FITT Semantik */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-3">
-              <h4 className="font-bold text-sky-400 text-xs flex items-center gap-2 uppercase tracking-wide">
-                <TrendingUp className="w-4 h-4 text-sky-400" /> Detail Preskripsi & Rekomendasi Latihan (Prinsip FITT Semantik)
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 min-w-0">
+              <h4 className="font-bold text-sky-400 text-xs flex items-center gap-2 uppercase tracking-wide leading-snug">
+                <TrendingUp className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Detail Preskripsi & Rekomendasi Latihan (Prinsip FITT Semantik)</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-slate-300">
                 <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
-                  <span className="font-semibold text-slate-400">Frequency (Frekuensi Latihan):</span>
-                  <p className="font-medium text-white">{studentData.prescription.frequency}</p>
+                  <span className="font-semibold text-slate-400 block">Frequency (Frekuensi Latihan):</span>
+                  <p className="font-medium text-white leading-relaxed">{studentData.prescription.frequency}</p>
                 </div>
                 <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
-                  <span className="font-semibold text-slate-400">Intensity (Intensitas Latihan):</span>
-                  <p className="font-medium text-white">{studentData.prescription.intensity}</p>
+                  <span className="font-semibold text-slate-400 block">Intensity (Intensitas Latihan):</span>
+                  <p className="font-medium text-white leading-relaxed">{studentData.prescription.intensity}</p>
                 </div>
                 <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
-                  <span className="font-semibold text-slate-400">Time (Durasi Sesi):</span>
-                  <p className="font-medium text-white">{studentData.prescription.timeDuration}</p>
+                  <span className="font-semibold text-slate-400 block">Time (Durasi Sesi):</span>
+                  <p className="font-medium text-white leading-relaxed">{studentData.prescription.timeDuration}</p>
                 </div>
                 <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
-                  <span className="font-semibold text-slate-400">Type (Jenis Olahraga):</span>
-                  <p className="font-medium text-white">{studentData.prescription.exerciseType}</p>
+                  <span className="font-semibold text-slate-400 block">Type (Jenis Olahraga):</span>
+                  <p className="font-medium text-white leading-relaxed">{studentData.prescription.exerciseType}</p>
                 </div>
               </div>
-              <div className="p-3.5 bg-emerald-950/30 rounded-xl border border-emerald-800/40 text-emerald-300 text-xs font-medium">
+              <div className="p-3.5 bg-emerald-950/30 rounded-xl border border-emerald-800/40 text-emerald-300 text-xs font-medium leading-relaxed">
                 <span className="font-bold text-emerald-400">Evaluasi Industri (DUDI):</span> {studentData.prescription.dudiEvaluation}
               </div>
             </div>
 
             {/* Riwayat Historis Lintas Sesi */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-sm space-y-3">
-              <h4 className="font-bold text-sky-400 text-xs uppercase tracking-wide">Rekapitulasi Riwayat Seluruh Periode Tes</h4>
+            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 shadow-sm space-y-3 min-w-0">
+              <h4 className="font-bold text-sky-400 text-xs uppercase tracking-wide">
+                Rekapitulasi Riwayat Seluruh Periode Tes
+              </h4>
               <div className="overflow-x-auto border border-slate-700 rounded-xl">
-                <table className="w-full text-left border-collapse text-xs">
+                <table className="w-full text-left border-collapse text-xs min-w-[820px]">
                   <thead className="bg-slate-900 text-slate-300">
                     <tr>
-                      <th className="p-3">Periode Tes</th>
-                      <th className="p-3">Tanggal</th>
-                      <th className="p-3 text-center">BB/TB</th>
-                      <th className="p-3 text-center">IMT</th>
-                      <th className="p-3 text-center">Sprint 60m</th>
-                      <th className="p-3 text-center">Chin Up</th>
-                      <th className="p-3 text-center">Sit Up</th>
-                      <th className="p-3 text-center">Vert. Jump</th>
-                      <th className="p-3 text-center">Lari</th>
-                      <th className="p-3 text-center">Total Skor</th>
-                      <th className="p-3 text-center">Kategori</th>
+                      <th className="p-3 whitespace-nowrap">Periode Tes</th>
+                      <th className="p-3 whitespace-nowrap">Tanggal</th>
+                      <th className="p-3 text-center whitespace-nowrap">BB/TB</th>
+                      <th className="p-3 text-center whitespace-nowrap">IMT</th>
+                      <th className="p-3 text-center whitespace-nowrap">Sprint 60m</th>
+                      <th className="p-3 text-center whitespace-nowrap">Chin Up</th>
+                      <th className="p-3 text-center whitespace-nowrap">Sit Up</th>
+                      <th className="p-3 text-center whitespace-nowrap">Vert. Jump</th>
+                      <th className="p-3 text-center whitespace-nowrap">Lari</th>
+                      <th className="p-3 text-center whitespace-nowrap">Total Skor</th>
+                      <th className="p-3 text-center whitespace-nowrap">Kategori</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-700 text-slate-200">
-                    {studentData.history.map((h, i) => (
-                      <tr key={i} className="hover:bg-slate-750">
-                        <td className="p-3 font-semibold text-white">{h.sessionNumber}</td>
-                        <td className="p-3 text-slate-400">{h.date}</td>
-                        <td className="p-3 text-center">{h.weight}/{h.height}</td>
-                        <td className="p-3 text-center">{h.bmiStatus}</td>
-                        <td className="p-3 text-center">{h.sprint}</td>
-                        <td className="p-3 text-center">{h.chinUp}</td>
-                        <td className="p-3 text-center">{h.sitUp}</td>
-                        <td className="p-3 text-center">{h.vertJump}</td>
-                        <td className="p-3 text-center">{h.runDist}</td>
-                        <td className="p-3 text-center font-bold text-sky-400">{h.totalTkji} Point</td>
-                        <td className="p-3 text-center font-semibold text-emerald-400">{h.categoryTkji}</td>
+                    {studentData.history.length === 0 ? (
+                      <tr>
+                        <td colSpan={11} className="p-4 text-center text-slate-400">
+                          Belum ada riwayat tes tercatat.
+                        </td>
                       </tr>
-                    ))}
+                    ) : (
+                      studentData.history.map((h, i) => (
+                        <tr key={i} className="hover:bg-slate-700/30">
+                          <td className="p-3 font-semibold text-white whitespace-nowrap">{h.sessionNumber}</td>
+                          <td className="p-3 text-slate-400 whitespace-nowrap">{h.date}</td>
+                          <td className="p-3 text-center whitespace-nowrap">
+                            {h.weight}/{h.height}
+                          </td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.bmiStatus}</td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.sprint}</td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.chinUp}</td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.sitUp}</td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.vertJump}</td>
+                          <td className="p-3 text-center whitespace-nowrap">{h.runDist}</td>
+                          <td className="p-3 text-center font-bold text-sky-400 whitespace-nowrap">
+                            {h.totalTkji} Point
+                          </td>
+                          <td className="p-3 text-center font-semibold text-emerald-400 whitespace-nowrap">
+                            {h.categoryTkji}
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
