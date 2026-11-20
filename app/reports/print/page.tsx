@@ -462,11 +462,11 @@ function PrintReportContent() {
                 return <polygon points={pts} fill="rgba(2, 132, 199, 0.3)" stroke="#0284c7" strokeWidth="2" />;
               })()}
 
-              <text x="50" y="7" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="middle">Sprint</text>
-              <text x="97" y="43" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Chin Up</text>
-              <text x="82" y="95" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Sit Up</text>
-              <text x="18" y="95" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Vert. Jump</text>
-              <text x="3" y="43" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Lari</text>
+              <text x="50" y="7" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="middle">Speed</text>
+              <text x="97" y="43" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Strength</text>
+              <text x="82" y="95" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Muscular Endurance</text>
+              <text x="18" y="95" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Power</text>
+              <text x="3" y="43" fontSize="7.5" fontWeight="bold" fill="#0369a1" textAnchor="end">VO2Max</text>
             </svg>
           </div>
         </div>

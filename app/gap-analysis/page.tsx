@@ -400,11 +400,11 @@ export default function GapAnalysisPage() {
                   {renderRadarPolygon(baseline?.items, "#94a3b8", "rgba(148, 163, 184, 0.2)", true)}
                   {renderRadarPolygon(latest?.items, "#0284c7", "rgba(2, 132, 199, 0.35)", false)}
 
-                  <text x="50" y="8" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="middle">Sprint 60m</text>
-                  <text x="93" y="42" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Chin Up</text>
-                  <text x="78" y="90" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Sit Up</text>
-                  <text x="22" y="90" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Vert. Jump</text>
-                  <text x="7" y="42" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Lari</text>
+                  <text x="50" y="8" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="middle">Speed</text>
+                  <text x="93" y="42" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Strength</text>
+                  <text x="78" y="90" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="start">Muscular Endurance</text>
+                  <text x="22" y="90" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="end">Power</text>
+                  <text x="7" y="42" fontSize="6.5" fontWeight="bold" fill="#0369a1" textAnchor="end">VO2Max</text>
                 </svg>
               </div>
               <div className="flex items-center justify-center gap-3 text-[9px] font-semibold text-gray-600 pt-1 border-t border-gray-100 w-full">
