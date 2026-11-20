@@ -101,6 +101,10 @@ export default function ReportsPage() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, selectedClassId, academicYear, semester]);
+
+  useEffect(() => {
     if (selectedClassId) {
       fetchClassRecapData(selectedClassId);
     } else {
@@ -185,7 +189,7 @@ export default function ReportsPage() {
             dudiStatus: matched.dudi_status
           };
         }
-        
+
         let tkjiLabel = 'Kurang';
         let dudiStatus = 'Kurang Siap Sekali';
 
@@ -239,7 +243,7 @@ export default function ReportsPage() {
 
       const processedData: StudentSummary[] = students.map((stu: any) => {
         const stuScores = scores?.filter((sc: any) => sc.student_id === stu.id) || [];
-        
+
         const sessionMap = new Map<string, any[]>();
         stuScores.forEach((sc: any) => {
           const dateKey = sc.test_date || '2026-10-14';
@@ -341,10 +345,10 @@ export default function ReportsPage() {
   }
 
   const filteredStudents = studentsData.filter(student => {
-    const matchesSearch = 
+    const matchesSearch =
       student.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.nis.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     let matchesStatus = true;
     if (statusFilter !== 'Semua') {
       matchesStatus = student.dudiStatus.toLowerCase() === statusFilter.toLowerCase();
@@ -372,7 +376,7 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="w-full h-[calc(100vh-6rem)] flex flex-col overflow-hidden space-y-4">
+    <div className="w-full min-w-0 flex flex-col space-y-4">
       <Modal
         isOpen={modalConfig.isOpen}
         onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
@@ -394,87 +398,169 @@ export default function ReportsPage() {
 
       {/* MODAL PRATINJAU INTERAKTIF */}
       {isDetailModalOpen && selectedStudent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl overflow-hidden flex flex-col max-h-[95vh]">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-sky-600" />
-                <h3 className="font-bold text-gray-900">Pratinjau Rapor - {selectedStudent.full_name}</h3>
-              </div>
-              <div className="flex items-center gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh]">
+            {/* Header Modal Responsif */}
+            <div className="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gray-50 shrink-0">
+              <div className="flex items-center justify-between sm:justify-start gap-2 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <FileText className="w-5 h-5 text-sky-600 shrink-0" />
+                  <h3 className="font-bold text-gray-900 text-sm sm:text-base truncate">
+                    Pratinjau Rapor - {selectedStudent.full_name}
+                  </h3>
+                </div>
                 <button
-                  onClick={() => handlePrintIndividual(selectedStudent)}
-                  className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow"
+                  type="button"
+                  onClick={() => setIsDetailModalOpen(false)}
+                  className="sm:hidden text-gray-400 hover:text-gray-600 p-1 rounded-lg shrink-0"
+                  aria-label="Tutup pratinjau"
                 >
-                  <Printer className="w-4 h-4" /> Buka Tab Cetak PDF ({selectedStudent.nis})
+                  <X className="w-5 h-5" />
                 </button>
-                <button onClick={() => setIsDetailModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1">
+              </div>
+
+              <div className="flex items-center justify-end gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => handlePrintIndividual(selectedStudent)}
+                  className="w-full sm:w-auto flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow cursor-pointer"
+                >
+                  <Printer className="w-4 h-4 shrink-0" />
+                  <span className="truncate">Buka Tab Cetak PDF ({selectedStudent.nis})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsDetailModalOpen(false)}
+                  className="hidden sm:inline-flex text-gray-400 hover:text-gray-600 p-1.5 rounded-lg cursor-pointer"
+                  aria-label="Tutup pratinjau"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
-            <div className="p-8 space-y-6 overflow-y-auto flex-1 text-xs text-gray-800 bg-white">
-              <div className="text-center pb-2 border-b border-gray-200">
-                <h2 className="text-sm font-extrabold text-gray-900 tracking-wide uppercase">
+            {/* Isi Pratinjau Rapor */}
+            <div className="p-4 sm:p-6 md:p-8 space-y-5 overflow-y-auto flex-1 text-xs text-gray-800 bg-white min-w-0">
+              <div className="text-center pb-3 border-b border-gray-200">
+                <h2 className="text-xs sm:text-sm font-extrabold text-gray-900 tracking-wide uppercase leading-snug">
                   RAPOR KEBUGARAN JASMANI & KESIAPAN KERJA (PHYSICAL READINESS DUDI)
                 </h2>
-                <p className="text-[10px] text-gray-500 mt-0.5">Aplikasi Profiling SAGARA - SMK Negeri 1 Karawang</p>
+                <p className="text-[10px] sm:text-xs text-gray-500 mt-1">
+                  Aplikasi Profiling SAGARA - SMK Negeri 1 Karawang
+                </p>
               </div>
 
-              <div className="border border-gray-200 rounded-xl p-4 bg-gray-50 flex gap-4 items-center">
+              {/* Kartu Biodata Siswa Responsif */}
+              <div className="border border-gray-200 rounded-xl p-3.5 sm:p-4 bg-gray-50 flex flex-col sm:flex-row gap-4 items-center sm:items-start">
                 <div className="w-20 h-24 bg-gray-200 rounded-lg overflow-hidden border border-gray-300 flex items-center justify-center shrink-0">
                   {selectedStudent.photo_url ? (
-                    <img src={selectedStudent.photo_url} alt={selectedStudent.full_name} className="w-full h-full object-cover" />
+                    <img
+                      src={selectedStudent.photo_url}
+                      alt={selectedStudent.full_name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
                     <User className="w-8 h-8 text-gray-400" />
                   )}
                 </div>
-                <div className="grid grid-cols-2 gap-x-8 gap-y-1.5 flex-1 text-xs">
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">Nama Lengkap</span>: <span className="font-bold text-gray-900 ml-1">{selectedStudent.full_name}</span></div>
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">Jenis Kelamin</span>: <span className="font-medium text-gray-800 ml-1">{selectedStudent.gender === 'L' ? 'Laki-Laki (16-19 Tahun)' : 'Perempuan (16-19 Tahun)'}</span></div>
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">NIS / NISN</span>: <span className="font-medium text-gray-800 ml-1">{selectedStudent.nis}</span></div>
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">Tahun Ajaran</span>: <span className="font-medium text-gray-800 ml-1">{academicYear}</span></div>
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">Kelas / Program</span>: <span className="font-medium text-sky-700 ml-1">{selectedStudent.className}</span></div>
-                  <div className="flex"><span className="w-28 font-semibold text-gray-500">Status DUDI</span>: <span className="font-bold text-sky-700 ml-1">{selectedStudent.dudiStatus}</span></div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 flex-1 w-full min-w-0 text-xs">
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">Nama Lengkap</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-bold text-gray-900 break-words min-w-0">
+                      {selectedStudent.full_name}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">Jenis Kelamin</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-medium text-gray-800 break-words min-w-0">
+                      {selectedStudent.gender === 'L' ? 'Laki-Laki (16-19 Tahun)' : 'Perempuan (16-19 Tahun)'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">NIS / NISN</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-medium text-gray-800 break-all min-w-0">
+                      {selectedStudent.nis}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">Tahun Ajaran</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-medium text-gray-800 whitespace-nowrap">
+                      {academicYear}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">Kelas / Program</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-semibold text-sky-700 break-words min-w-0">
+                      {selectedStudent.className}
+                    </span>
+                  </div>
+
+                  <div className="flex items-start gap-1.5 min-w-0">
+                    <span className="w-24 sm:w-28 font-semibold text-gray-500 shrink-0">Status DUDI</span>
+                    <span className="text-gray-500 shrink-0">:</span>
+                    <span className="font-bold text-sky-700 break-words min-w-0">
+                      {selectedStudent.dudiStatus}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <div>
-                <h4 className="text-xs font-bold text-sky-700 mb-2">A. Rekapitulasi Hasil Seluruh Periode Tes TKJI (16-19 Tahun) & Indeks Massa Tubuh (IMT)</h4>
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <table className="w-full text-left border-collapse text-[11px]">
+              {/* Tabel Periode Tes dengan Scroll Horizontal Aman */}
+              <div className="min-w-0">
+                <h4 className="text-xs font-bold text-sky-700 mb-2 leading-snug">
+                  A. Rekapitulasi Hasil Seluruh Periode Tes TKJI (16-19 Tahun) & Indeks Massa Tubuh (IMT)
+                </h4>
+                <div className="border border-gray-200 rounded-xl overflow-x-auto">
+                  <table className="w-full text-left border-collapse text-[11px] min-w-[780px]">
                     <thead className="bg-[#0f172a] text-white">
                       <tr>
-                        <th className="p-2.5">Periode Tes</th>
-                        <th className="p-2.5">Tanggal</th>
-                        <th className="p-2.5 text-center">BB/TB</th>
-                        <th className="p-2.5 text-center">IMT</th>
-                        <th className="p-2.5 text-center">Sprint 60m</th>
-                        <th className="p-2.5 text-center">Chin Up</th>
-                        <th className="p-2.5 text-center">Sit Up</th>
-                        <th className="p-2.5 text-center">Vert. Jump</th>
-                        <th className="p-2.5 text-center">Lari</th>
-                        <th className="p-2.5 text-center">Total Skor</th>
-                        <th className="p-2.5 text-center">Kategori</th>
+                        <th className="p-2.5 whitespace-nowrap">Periode Tes</th>
+                        <th className="p-2.5 whitespace-nowrap">Tanggal</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">BB/TB</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">IMT</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Sprint 60m</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Chin Up</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Sit Up</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Vert. Jump</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Lari</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Total Skor</th>
+                        <th className="p-2.5 text-center whitespace-nowrap">Kategori</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 bg-white">
-                      {selectedStudent.history.map((h, i) => (
-                        <tr key={i}>
-                          <td className="p-2.5 font-semibold">{h.sessionNumber}</td>
-                          <td className="p-2.5">{h.date}</td>
-                          <td className="p-2.5 text-center">{h.weight}/{h.height}</td>
-                          <td className="p-2.5 text-center">{h.bmiStatus}</td>
-                          <td className="p-2.5 text-center">{h.sprint}</td>
-                          <td className="p-2.5 text-center">{h.chinUp}</td>
-                          <td className="p-2.5 text-center">{h.sitUp}</td>
-                          <td className="p-2.5 text-center">{h.vertJump}</td>
-                          <td className="p-2.5 text-center">{h.runDist}</td>
-                          <td className="p-2.5 text-center font-bold text-sky-700">{h.totalTkji} Point</td>
-                          <td className="p-2.5 text-center font-semibold text-emerald-700">{h.categoryTkji}</td>
+                      {selectedStudent.history.length === 0 ? (
+                        <tr>
+                          <td colSpan={11} className="p-4 text-center text-gray-400">
+                            Belum ada riwayat tes tercatat.
+                          </td>
                         </tr>
-                      ))}
+                      ) : (
+                        selectedStudent.history.map((h, i) => (
+                          <tr key={i} className="hover:bg-gray-50/70">
+                            <td className="p-2.5 font-semibold whitespace-nowrap">{h.sessionNumber}</td>
+                            <td className="p-2.5 whitespace-nowrap">{h.date}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.weight}/{h.height}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.bmiStatus}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.sprint}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.chinUp}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.sitUp}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.vertJump}</td>
+                            <td className="p-2.5 text-center whitespace-nowrap">{h.runDist}</td>
+                            <td className="p-2.5 text-center font-bold text-sky-700 whitespace-nowrap">{h.totalTkji} Point</td>
+                            <td className="p-2.5 text-center font-semibold text-emerald-700 whitespace-nowrap">{h.categoryTkji}</td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -485,23 +571,27 @@ export default function ReportsPage() {
       )}
 
       {/* Header Modul */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shrink-0">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">DIREKTORI DATA SISWA & REKAPITULASI PROFIL KEBUGARAN</h2>
-          <p className="text-xs text-gray-500 mt-0.5">Database Siswa Vokasi SMK Negeri 1 Karawang & Status Physical Readiness DUDI</p>
+      <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center md:justify-between gap-3 shrink-0">
+        <div className="min-w-0">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 leading-snug break-words">
+            DIREKTORI DATA SISWA & REKAPITULASI PROFIL KEBUGARAN
+          </h2>
+          <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
+            Database Siswa Vokasi SMK Negeri 1 Karawang & Status Physical Readiness DUDI
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-sky-100">
-            <Calendar className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 bg-sky-50 text-sky-700 px-3 py-1.5 rounded-xl text-xs font-semibold border border-sky-100 whitespace-nowrap">
+            <Calendar className="w-3.5 h-3.5 shrink-0" />
             <span>T.A {academicYear} ({semester})</span>
           </div>
         </div>
       </div>
 
       {/* Filter Kontrol */}
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-wrap gap-4 items-center justify-between shrink-0">
-        <div className="flex flex-wrap items-center gap-3 flex-1">
-          <div className="relative min-w-[240px] flex-1">
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between shrink-0">
+        <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 flex-1 min-w-0">
+          <div className="relative w-full sm:w-64 md:w-72">
             <Search className="absolute left-3.5 top-2.5 w-4 h-4 text-gray-400" />
             <input
               type="text"
@@ -512,12 +602,12 @@ export default function ReportsPage() {
             />
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-500">Kelas:</span>
+          <div className="flex items-center justify-between sm:justify-start gap-2">
+            <span className="text-xs font-medium text-gray-500 shrink-0">Kelas:</span>
             <select
               value={selectedClassId}
               onChange={(e) => setSelectedClassId(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-sky-500 min-w-[150px]"
+              className="flex-1 sm:flex-initial px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-sky-500 min-w-[140px]"
             >
               {classesList.length === 0 ? (
                 <option value="">Tidak ada kelas binaan</option>
@@ -529,12 +619,12 @@ export default function ReportsPage() {
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-gray-500">Status:</span>
+          <div className="flex items-center justify-between sm:justify-start gap-2">
+            <span className="text-xs font-medium text-gray-500 shrink-0">Status:</span>
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-sky-500 min-w-[150px]"
+              className="flex-1 sm:flex-initial px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-sky-500 min-w-[140px]"
             >
               <option value="Semua">Semua</option>
               <option value="Siap">Siap</option>
@@ -545,40 +635,46 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 font-medium">
+        <div className="text-xs text-gray-500 font-medium whitespace-nowrap">
           Total: {filteredStudents.length} siswa
         </div>
       </div>
 
       {/* Tabel Rekapitulasi Rapor */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex-1 flex flex-col overflow-hidden">
-        <div className="flex-1 overflow-auto">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col overflow-hidden min-w-0">
+        <div className="overflow-x-auto">
           {classesList.length === 0 ? (
-            <div className="text-center py-20 text-gray-400 text-xs">Belum ada penugasan kelas binaan untuk akun Anda.</div>
+            <div className="text-center py-16 px-4 text-gray-400 text-xs">
+              Belum ada penugasan kelas binaan untuk akun Anda.
+            </div>
           ) : loading ? (
-            <div className="text-center py-20 text-gray-400 text-xs">Memuat rekapitulasi data siswa...</div>
+            <div className="text-center py-16 px-4 text-gray-400 text-xs">
+              Memuat rekapitulasi data siswa...
+            </div>
           ) : currentStudents.length === 0 ? (
-            <div className="text-center py-20 text-gray-400 text-xs">Belum ada data siswa atau nilai pada kelas dan filter ini.</div>
+            <div className="text-center py-16 px-4 text-gray-400 text-xs">
+              Belum ada data siswa atau nilai pada kelas dan filter ini.
+            </div>
           ) : (
-            <table className="w-full text-left border-collapse min-w-max">
-              <thead className="bg-gray-50 sticky top-0 z-20 border-b border-gray-200 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
+            <table className="w-full text-left border-collapse min-w-[820px]">
+              <thead className="bg-gray-50 border-b border-gray-200 text-[11px] font-semibold text-gray-600 uppercase tracking-wider">
                 <tr>
-                  <th className="py-3.5 px-4">NIS</th>
-                  <th className="py-3.5 px-4">Nama Siswa</th>
-                  <th className="py-3.5 px-4 text-center">L/P</th>
-                  <th className="py-3.5 px-4">Kelas</th>
-                  <th className="py-3.5 px-4">BB/TB</th>
-                  <th className="py-3.5 px-4">IMT Status</th>
-                  <th className="py-3.5 px-4">Skor TKJI</th>
-                  <th className="py-3.5 px-4 text-center">Kesiapan DUDI</th>
-                  <th className="py-3.5 px-4 text-center">Aksi</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">NIS</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">Nama Siswa</th>
+                  <th className="py-3.5 px-4 text-center whitespace-nowrap">L/P</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">Kelas</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">BB/TB</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">IMT Status</th>
+                  <th className="py-3.5 px-4 whitespace-nowrap">Skor TKJI</th>
+                  <th className="py-3.5 px-4 text-center whitespace-nowrap">Kesiapan DUDI</th>
+                  <th className="py-3.5 px-4 text-center whitespace-nowrap">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-xs">
                 {currentStudents.map((student) => {
                   let badgeColor = 'bg-gray-100 text-gray-700 border border-gray-200';
                   const statusLower = (student.dudiStatus || '').toLowerCase();
-                  
+
                   if (statusLower === 'siap' || (statusLower.includes('siap') && !statusLower.includes('belum') && !statusLower.includes('kurang'))) {
                     badgeColor = 'bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold';
                   } else if (statusLower.includes('belum')) {
@@ -591,33 +687,39 @@ export default function ReportsPage() {
 
                   return (
                     <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
-                      <td className="py-3 px-4 font-medium text-gray-900">{student.nis}</td>
-                      <td className="py-3 px-4 font-semibold text-gray-900">{student.full_name}</td>
-                      <td className="py-3 px-4 text-center">
-                        <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 text-[10px] font-medium">{student.gender}</span>
+                      <td className="py-3 px-4 font-medium text-gray-900 whitespace-nowrap">{student.nis}</td>
+                      <td className="py-3 px-4 font-semibold text-gray-900 whitespace-nowrap">{student.full_name}</td>
+                      <td className="py-3 px-4 text-center whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-700 text-[10px] font-medium">
+                          {student.gender}
+                        </span>
                       </td>
-                      <td className="py-3 px-4 font-medium text-sky-700">{student.className}</td>
-                      <td className="py-3 px-4 text-gray-700 font-medium">{student.latestWeight && student.latestHeight ? `${student.latestWeight}/${student.latestHeight}` : '-'}</td>
-                      <td className="py-3 px-4 text-gray-700">{student.latestBmiStatus}</td>
-                      <td className="py-3 px-4 font-bold text-gray-900">{student.latestTkjiLabel}</td>
-                      <td className="py-3 px-4 text-center">
-                        <span className={`px-3 py-1 rounded-lg text-[11px] ${badgeColor}`}>
+                      <td className="py-3 px-4 font-medium text-sky-700 whitespace-nowrap">{student.className}</td>
+                      <td className="py-3 px-4 text-gray-700 font-medium whitespace-nowrap">
+                        {student.latestWeight && student.latestHeight ? `${student.latestWeight}/${student.latestHeight}` : '-'}
+                      </td>
+                      <td className="py-3 px-4 text-gray-700 whitespace-nowrap">{student.latestBmiStatus}</td>
+                      <td className="py-3 px-4 font-bold text-gray-900 whitespace-nowrap">{student.latestTkjiLabel}</td>
+                      <td className="py-3 px-4 text-center whitespace-nowrap">
+                        <span className={`px-3 py-1 rounded-lg text-[11px] inline-block ${badgeColor}`}>
                           {student.dudiStatus}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-center">
+                      <td className="py-3 px-4 text-center whitespace-nowrap">
                         <div className="flex items-center justify-center gap-1.5">
                           <button
+                            type="button"
                             onClick={() => handleOpenDetail(student)}
                             title="Pratinjau Rapor"
-                            className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                            className="p-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors cursor-pointer"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
+                            type="button"
                             onClick={() => handlePrintIndividual(student)}
                             title="Cetak PDF Rapor"
-                            className="p-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-lg transition-colors"
+                            className="p-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-lg transition-colors cursor-pointer"
                           >
                             <Printer className="w-4 h-4" />
                           </button>
@@ -632,15 +734,16 @@ export default function ReportsPage() {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 bg-gray-50/50 shrink-0">
-          <span>
+        <div className="px-4 sm:px-6 py-3 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-500 bg-gray-50/50 shrink-0">
+          <span className="text-center sm:text-left">
             Menampilkan {currentStudents.length > 0 ? indexOfFirstItem + 1 : 0} - {Math.min(indexOfLastItem, filteredStudents.length)} dari {filteredStudents.length} siswa {selectedClassId ? `(Kelas ${classesList.find(c => c.id === selectedClassId)?.name || ''})` : ''}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 shrink-0">
             <button
+              type="button"
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed bg-white font-semibold"
+              className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed bg-white font-semibold cursor-pointer"
             >
               &lt;
             </button>
@@ -648,9 +751,10 @@ export default function ReportsPage() {
               {currentPage}
             </span>
             <button
+              type="button"
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages || totalPages === 0}
-              className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed bg-white font-semibold"
+              className="px-3 py-1.5 border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed bg-white font-semibold cursor-pointer"
             >
               &gt;
             </button>
